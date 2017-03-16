@@ -21,7 +21,7 @@ public class UserController {
 	public String newRegistration(ModelMap model){
 		User user=new User();
 		model.addAttribute("user",user);
-		return "index";
+		return "BlackHeader";
 	}
 	@RequestMapping("/userRegister")
 	public ModelAndView userRegisterStatus(@ModelAttribute("user") User user){

@@ -5,16 +5,26 @@
 <head>
 <style >
 h2 span{
-color: dark grey; 
+color: #53e8e5; 
    font: bold 24px/45px Helvetica, Sans-Serif; 
    font-size:100px;
    letter-spacing: -1px;  
    padding: 10px;
 }
+
+form{
+color: #318c8a; 
+
+}
+
+#homeHeader { 
+    color: #53e8e5;
+}
+
 </style>
 <style >
 body {
-background-image: url(images/img.jpg); /*You will specify your image path here.*/
+background-image: url("/static/images/bodyBackground.jpg"); /*You will specify your image path here.*/
 
 -moz-background-size: cover;
 -webkit-background-size: cover;
@@ -35,8 +45,8 @@ background-attachment: fixed;
 <form action="">
 <h2><span><center>WanderLust</center></span></h2>
 
- <nav class="navbar navbar-inverse"> 
-  <div class="container-fluid">
+ <nav class="navbar navbar-inverse"  > 
+  <div class="container-fluid" id="homeHeader">
     
     <ul class="nav navbar-nav">
       <li ><a href="FlightForm.jsp">Flight</a></li>
@@ -55,5 +65,6 @@ background-attachment: fixed;
   </div>
   </nav>
  </form>
+ <jsp:include page="index.jsp"></jsp:include>
 </body>
 </html>
