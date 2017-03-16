@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.mmt.model.bean.Hotel;
@@ -117,9 +119,9 @@ public class HotelBlMMT {
 	}
 	
 	
-	public ArrayList<String> getHotelLocationList() throws ClassNotFoundException, SQLException, IOException{
+	public Set<String> getHotelLocationList() throws ClassNotFoundException, SQLException, IOException{
 		ArrayList<Hotel> hotelList=hotelDao.displayHotel();
-		ArrayList<String> list=new ArrayList<String>();
+		Set<String> list=new HashSet<String>();
 		for(Hotel hotel:hotelList){
 			list.add(hotel.getHotelLocation());
 		

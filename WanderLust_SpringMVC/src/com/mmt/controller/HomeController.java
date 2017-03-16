@@ -3,7 +3,9 @@ package com.mmt.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -65,9 +67,9 @@ public class HomeController {
 	
 	
 	@ModelAttribute("hotelList")
-	public List<String> hotelList() {
+	public Set<String> hotelList() {
 
-		List<String> hotelList = new ArrayList<String>();
+		Set<String> hotelList = new HashSet<String>();
 		try {
 
 			hotelList = hotelBlMMT.getHotelLocationList();
