@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.mmt.model.bean.Flight;
 import com.mmt.model.bean.FlightBooking;
@@ -81,10 +83,10 @@ public class FlightBookingBlMMT {
 	}
 	
 	
-	public ArrayList<String> getSourceList() throws ClassNotFoundException, SQLException, IOException{
+	public Set<String> getSourceList() throws ClassNotFoundException, SQLException, IOException{
 		ArrayList<Flight> flightList= new FlightDaoImplMMT().displayFlight();
 		
-		ArrayList<String> sourceList=new ArrayList<String>();
+		Set<String> sourceList=new HashSet<String>();
 		for(Flight flight: flightList){
 			
 			sourceList.add(flight.getFlightSource());
@@ -93,10 +95,10 @@ public class FlightBookingBlMMT {
 		
 	}
 	
-	public ArrayList<String> getDestinationList() throws ClassNotFoundException, SQLException, IOException{
+	public Set<String> getDestinationList() throws ClassNotFoundException, SQLException, IOException{
 		ArrayList<Flight> flightList= new FlightDaoImplMMT().displayFlight();
 	
-		ArrayList<String> destList= new ArrayList<String>();
+		Set<String> destList= new HashSet<String>();
 		for(Flight flight: flightList){
 			
 			destList.add(flight.getFlightDestination());

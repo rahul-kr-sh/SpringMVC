@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.mmt.model.bean.Flight;
 import com.mmt.model.bl.FlightBookingBlMMT;
 import com.mmt.model.bl.HotelBlMMT;
 import com.mmt.model.bl.UserBlMMT;
@@ -31,15 +34,29 @@ public class HomeController {
 	
 
 	@RequestMapping("/searchFlight")
-	public String searchFlight() {
-
+	public String searchFlight(ModelMap model) {
+		Flight flight=new Flight();
+		model.addAttribute("flight", flight);
 		return "FlightForm";
+	}
+	
+	@RequestMapping("/SelectFlight")
+	public ModelAndView SelectFlight(@ModelAttribute("flight") Flight flight) {
+		List<Flight> flightList=new ArrayList<Flight>();
+		try {
+			flightList=flightBookingBlMMT.searchFlight(flight.getFlightSource(), flight.getFlightDestination());
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			
+			e.printStackTrace();
+		}
+		ModelAndView mv=new ModelAndView("SearchFlightList", "searchFlightList", flightList);
+		return mv;
 	}
 
 	@ModelAttribute("flightSourceList")
-	public List<String> flightSourceList() {
+	public Set<String> flightSourceList() {
 
-		List<String> flightSourceList = new ArrayList<String>();
+		Set<String> flightSourceList = new HashSet<String>();
 		try {
 
 			flightSourceList = flightBookingBlMMT.getSourceList();
@@ -52,12 +69,12 @@ public class HomeController {
 	}
 
 	@ModelAttribute("flightDestList")
-	public List<String> flightDestList() {
+	public Set<String> flightDestList() {
 
-		List<String> flightDestList = new ArrayList<String>();
+		Set<String> flightDestList = new HashSet<String>();
 		try {
 
-			flightDestList = flightBookingBlMMT.getSourceList();
+			flightDestList = flightBookingBlMMT.getDestinationList();
 
 		} catch (SQLException | ClassNotFoundException | IOException e) {
 			e.printStackTrace();
