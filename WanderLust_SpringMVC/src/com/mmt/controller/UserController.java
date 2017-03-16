@@ -3,6 +3,8 @@ package com.mmt.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,16 +15,16 @@ import com.mmt.model.bean.User;
 import com.mmt.model.bl.UserBlMMT;
 
 
+
 @Controller
 public class UserController {
 	
 	private UserBlMMT userBl=new UserBlMMT();
-	@RequestMapping("/")
-	public String newRegistration(ModelMap model){
-		User user=new User();
-		model.addAttribute("user",user);
-		return "BlackHeader";
-	}
+//	@RequestMapping("/")
+//	public String startApplication(){
+//		
+//		return "HomeHeader";
+//	}
 	@RequestMapping("/userRegister")
 	public ModelAndView userRegisterStatus(@ModelAttribute("user") User user){
 		ModelAndView modelAndView=new ModelAndView();

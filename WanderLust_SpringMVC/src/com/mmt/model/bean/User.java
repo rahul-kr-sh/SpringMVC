@@ -11,18 +11,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class User implements Serializable{
 	
+	@NotEmpty
 	@Size(min=4, max=12)
 	private String userId;
+	@NotEmpty
 	@Size(min=4, max=20)
 	private String userName;
 //	@ValidatePhone
+	@NotEmpty
 	private long userPhoneNo;
 	@NotEmpty
 	@Email
 	private String userEmailId;
+	@NotEmpty
 	@Size(min=20, max=50)
 	private String userAddress;
-	@Size(min=8, max=20)
+	@NotEmpty
 	private String userPassword;
 
 	public User() {

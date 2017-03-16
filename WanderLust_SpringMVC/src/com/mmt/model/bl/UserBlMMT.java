@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Service;
+
 import com.mmt.model.bean.FlightBooking;
 import com.mmt.model.bean.HotelBooking;
 import com.mmt.model.bean.User;
@@ -14,6 +16,7 @@ import com.mmt.model.dao.HotelBookingDaoImplMMT;
 import com.mmt.model.dao.UserDaoImplMMT;
 import com.mmt.model.dao.WalletDaoImplMMT;
 
+@Service
 public class UserBlMMT {
 	private HotelBookingDaoImplMMT hotelBookingDao = new HotelBookingDaoImplMMT();
 	private FlightBookingImpMMT flightBookingDao = new FlightBookingImpMMT();

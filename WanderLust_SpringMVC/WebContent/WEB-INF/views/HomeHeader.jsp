@@ -49,7 +49,7 @@ background-attachment: fixed;
   <div class="container-fluid" id="homeHeader">
     
     <ul class="nav navbar-nav">
-      <li ><a href="FlightForm.jsp">Flight</a></li>
+      <li ><a href="./searchFlight">Flight</a></li>
       
       
       <li><a href="HotelForm.jsp">Hotel</a>  </li>
@@ -60,11 +60,13 @@ background-attachment: fixed;
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="Signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="login.jsp"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="Login.jsp"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
   </div>
   </nav>
  </form>
- <jsp:include page="index.jsp"></jsp:include>
+ 
+ <img src="/static/images/bodyBackground.jpg"  height="42" width="42">
+
 </body>
 </html>
