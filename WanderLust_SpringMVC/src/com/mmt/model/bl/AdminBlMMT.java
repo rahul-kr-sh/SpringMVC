@@ -3,6 +3,8 @@ package com.mmt.model.bl;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Service;
+
 import com.mmt.model.bean.Admin;
 import com.mmt.model.bean.Flight;
 import com.mmt.model.bean.Hotel;
@@ -10,6 +12,7 @@ import com.mmt.model.dao.AdminDaoImplMMT;
 import com.mmt.model.dao.FlightDaoImplMMT;
 import com.mmt.model.dao.HotelDaoImplMMT;
 
+@Service
 public class AdminBlMMT {
 	private FlightDaoImplMMT flightdao = new FlightDaoImplMMT();
 	private HotelDaoImplMMT hoteldao = new HotelDaoImplMMT();

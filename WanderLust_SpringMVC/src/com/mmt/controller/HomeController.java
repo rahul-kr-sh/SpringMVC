@@ -82,7 +82,7 @@ public class HomeController {
 		ModelAndView modelAndView=new ModelAndView();
 		
 		if(session.getAttribute("userBeanSession")==null){
-			modelAndView.setViewName("login");
+			modelAndView.setViewName("Login");
 		}
 		else {
 			modelAndView.setViewName("ChoosePromoFlight");
