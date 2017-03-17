@@ -21,18 +21,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mmt.model.bean.Admin;
 import com.mmt.model.bean.Flight;
+import com.mmt.model.bean.Promotion;
 import com.mmt.model.bean.User;
 import com.mmt.model.bl.AdminBlMMT;
 import com.mmt.model.bl.FlightBookingBlMMT;
 import com.mmt.model.bl.HotelBlMMT;
+import com.mmt.model.bl.PromotionBlMMT;
 import com.mmt.model.bl.UserBlMMT;
 
+
 @Controller
-@SessionAttributes({"flightSeat","user","admin"})
+@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession"})
 public class HomeController {
 
 	private FlightBookingBlMMT flightBookingBlMMT = new FlightBookingBlMMT();
 	private HotelBlMMT hotelBlMMT = new HotelBlMMT();
+	private PromotionBlMMT promotionBl=new PromotionBlMMT();
+	
 
 	private UserBlMMT userBl = new UserBlMMT();
 	private AdminBlMMT adminBl=new AdminBlMMT();
@@ -54,11 +59,12 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/selectFlight")
-	public ModelAndView selectFlight(@ModelAttribute("flight") Flight flight, @RequestParam("seats")int flightSeat, ModelMap model) {
+	public ModelAndView selectFlight(@ModelAttribute("flight") Flight flight, HttpServletRequest request, ModelMap model) {
 		List<Flight> flightList=new ArrayList<Flight>();
-		model.addAttribute(flightSeat);
+	  
+		int flightSeat=Integer.parseInt(request.getParameter("seats"));
 		
-		
+
 		try {
 			flightList=flightBookingBlMMT.searchFlight(flight.getFlightSource(), flight.getFlightDestination());
 		} catch (ClassNotFoundException | SQLException | IOException e) {
@@ -66,14 +72,21 @@ public class HomeController {
 			e.printStackTrace();
 		}
 		ModelAndView mv=new ModelAndView("SearchFlightList", "arrayListFlight", flightList);
+		mv.addObject("flightSeat",flightSeat);
 		return mv;
 	}
 	
 	@RequestMapping("/bookFlight")
-	public ModelAndView bookFlight(ModelMap model){
+	public ModelAndView bookFlight(ModelMap model,HttpSession session){
 		
+		ModelAndView modelAndView=new ModelAndView();
 		
-		System.out.println("========="+model.get("flightSeat"));
+		if(session.getAttribute("userBeanSession")==null){
+			modelAndView.setViewName("login");
+		}
+		else {
+			modelAndView.setViewName("ChoosePromoFlight");
+		}
 		return null;
 		
 	}
@@ -129,6 +142,26 @@ public class HomeController {
 		return hotelList;
 	}
 	
+	
+	@ModelAttribute("flightPromoList")
+	public List<String> flightPromoList(){
+		List<Promotion> promoList=new ArrayList<Promotion>();
+		try {
+			promoList=promotionBl.displayPromotion("FLIGHT");
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+		
+			e.printStackTrace();
+		}
+		
+		List<String> promoNameList=new ArrayList<String>();
+		for(Promotion promo:promoList){
+			promoNameList.add(promo.getPromotionName());
+		}
+		return promoNameList;
+	}
+	
+	
+	
 	//Flight Section end
 	
 	
@@ -165,22 +198,25 @@ public class HomeController {
 			e1.printStackTrace();
 		}
 		if (admin != null) {
-
-			model.addAttribute("admin", admin);
+			modelAndView.addObject("adminBeanSession",admin);
+//			model.addAttribute("admin", admin);
 			modelAndView.setViewName("AdminLoginHeader");
 
 		} else if (user != null) {
-
-			model.addAttribute("user", user);
+			modelAndView.addObject("userBeanSession",user);
+//			model.addAttribute("userBean", user);
 			modelAndView.setViewName("UserLoginHeader");
 		} else {
 			modelAndView.addObject("loginErrMessage",  " Invalid User id or password");
 			modelAndView.setViewName("Login");
 		}
 		
-		
-		
 		return modelAndView;
 		
+	}
+	
+	@RequestMapping("/logout")
+	public String logout(){
+		return "HomeHeader";
 	}
 }

@@ -11,21 +11,16 @@ color: #53e8e5;
    letter-spacing: -1px;  
    padding: 10px;
 }
-
 form{
 color: #318c8a; 
-
 }
-
 #homeHeader { 
     color: #53e8e5;
 }
-
 </style>
 <style >
 body {
 background-image: url("/static/images/bodyBackground.jpg"); /*You will specify your image path here.*/
-
 -moz-background-size: cover;
 -webkit-background-size: cover;
 background-size: cover;

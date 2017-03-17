@@ -37,17 +37,7 @@ background-attachment: fixed;
 
 <body>
 
-<%@ page errorPage="Logout.jsp" %>
 
-<%
-
-if(session==null || !request.isRequestedSessionIdValid() || session.getAttribute("user")==null || session.getAttribute("admin")==null )
-{
-	response.sendRedirect("login.jsp");
-
-}
-
-%>
 <h2><span><center>WanderLust</center></span></h2>
 <!--  <div class="jumbotron text-center">
   <h1>Wander Lust</h1> 
@@ -59,7 +49,7 @@ if(session==null || !request.isRequestedSessionIdValid() || session.getAttribute
 	<div class="container-fluid">
 
 		<ul class="nav navbar-nav">
-			<li><a href="LoogedInFlightForm.jsp">Flight</a></li>
+			<li><a href="./">Flight</a></li>
 
 
 			<li><a href="LoggInHotelForm.jsp">Hotel</a></li>
@@ -71,12 +61,12 @@ if(session==null || !request.isRequestedSessionIdValid() || session.getAttribute
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 
-			<c:set var="userName" scope="session" value="${user.getUserName()}" />
+			
 
 
 			<li><a href="./UserProfile"><span
-					class="glyphicon glyphicon-user"></span> ${user.getUserName()} </a></li>
-			<li><a href="./Logout"><span
+					class="glyphicon glyphicon-user"></span> ${userBeanSession.getUserName()} </a></li>
+			<li><a href="./logout"><span
 					class="glyphicon glyphicon-log-out"></span>Logout </a></li>
 		</ul>
 	</div>
