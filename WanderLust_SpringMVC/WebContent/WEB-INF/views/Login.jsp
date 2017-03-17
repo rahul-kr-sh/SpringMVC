@@ -6,25 +6,27 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
+
+
+<jsp:include page="HomeHeader.jsp"></jsp:include>
 <body>
 
 
 
 <div class="container">
-  <h2>Vertical (basic) form</h2>
-  <form>
+  <h2 style="color:#53e8e5;margin-left:2000px;">Login here</h2>
+  <form action="./loginCheck">
     <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter email">
+      <label for="email">Enter User Id:</label>
+      <input type="text" class="form-control" id="userId"  name= "userId" placeholder="Enter User Id">
     </div>
     <div class="form-group">
-      <label for="pwd">Password:</label>
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+      <label for="pwd">Enter Password:</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
     </div>
-    <div class="checkbox">
-      <label><input type="checkbox"> Remember me</label>
-    </div>
+    <h3 style="color:red;margin-left:0px;">${loginErrMessage}</h3>
     <button type="submit" class="btn btn-default">Submit</button>
+    
   </form>
 </div>
 

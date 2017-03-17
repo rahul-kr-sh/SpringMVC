@@ -9,6 +9,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<jsp:include page="HomeHeader.jsp"></jsp:include>
 	<form:form action="./userRegister" modelAttribute="user" id="myform">
 		<form:label path="userId">Enter User id</form:label>
 		<form:input path="userId" />

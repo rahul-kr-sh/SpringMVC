@@ -24,11 +24,11 @@ import com.mmt.model.bl.UserBlMMT;
 public class UserController {
 	
 	private UserBlMMT userBl=new UserBlMMT();
-//	@RequestMapping("/")
-//	public String startApplication(){
-//		
-//		return "HomeHeader";
-//	}
+	@RequestMapping("/userSignup")
+	public ModelAndView userSignup(){
+		ModelAndView modelAndView=new ModelAndView("UserSignupForm","user", new User());
+		return modelAndView;
+	}
 	@RequestMapping("/userRegister")
 	public ModelAndView userRegisterStatus(@ModelAttribute("user") User user){
 		ModelAndView modelAndView=new ModelAndView();
@@ -49,5 +49,9 @@ public class UserController {
 		return modelAndView;
 		
 	}
+	
+	
+	
+	
 	
 }

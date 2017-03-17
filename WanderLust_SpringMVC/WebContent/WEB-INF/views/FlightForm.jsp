@@ -72,7 +72,7 @@ body {
 <jsp:include page="HomeHeader.jsp"></jsp:include>
 
 <body>
-	<form:form action="./SelectFlight" modelAttribute="flight">
+	<form:form action="./selectFlight" modelAttribute="flight">
 	
 	
 	<form:label path="flightSource">Source</form:label>
