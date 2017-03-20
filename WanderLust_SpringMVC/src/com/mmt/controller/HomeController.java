@@ -119,7 +119,7 @@ public class HomeController {
 	}
 	
 	
-	@RequestMapping("./confirmFlightBooking")
+	@RequestMapping("/confirmFlightBooking")
 	public ModelAndView confirmBooking(HttpSession session){
 		ModelAndView modelAndView=new ModelAndView();
 		double flightTicketPrice=(double)session.getAttribute("flightTicketPrice");
@@ -131,6 +131,7 @@ public class HomeController {
 		e.printStackTrace();
 	}
 		if(walletBalance>=flightTicketPrice){
+			System.out.println("=================="+ walletBalance);
 			modelAndView.setViewName("FlightTicketPricePayment");
 		}
 		else{
