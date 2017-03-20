@@ -20,7 +20,7 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		PreparedStatement pst = con.prepareStatement("insert into mmt_user values(?,?,?,?,?,?)");
 		pst.setString(1, user.getUserId());
 		pst.setString(2,user.getUserName());
-		pst.setLong(3,user.getUserPhoneNo());
+		pst.setString(3,user.getUserPhoneNo());
 		pst.setString(4,user.getUserEmailId());
 		pst.setString(5,user.getUserAddress());
 		pst.setString(6, user.getUserPassword());
@@ -45,7 +45,7 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		if(rs.next()){
 			user.setUserId((rs.getString("USERID")));
 			user.setUserName((rs.getString("USERNAME")));
-			user.setUserPhoneNo(rs.getLong("USERPHONENO"));
+			user.setUserPhoneNo(rs.getString("USERPHONENO"));
 			user.setUserEmailId(rs.getString("USEREMAILID"));
 			user.setUserAddress(rs.getString("USERADDRESS"));
 			user.setUserPassword(rs.getString("userpassword"));	
@@ -73,7 +73,7 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		 con=DbConnection.dbConnection();
 		PreparedStatement pst=con.prepareStatement("update mmt_user set USERNAME=?,  USERPHONENO=?, USEREMAILID=?, USERADDRESS=?,USERPASSWORD=? where userid=?");
 		pst.setString(1, user.getUserName());
-		pst.setLong(2, user.getUserPhoneNo());
+		pst.setString(2, user.getUserPhoneNo());
 		pst.setString(3, user.getUserEmailId());
 		pst.setString(4, user.getUserAddress());
 		pst.setString(5, user.getUserPassword());
@@ -93,7 +93,7 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		while(rs.next()){
 			user.setUserId(rs.getString("USERID"));
 			user.setUserName((rs.getString("USERNAME")));
-			user.setUserPhoneNo((rs.getLong("USERPHONENO")));
+			user.setUserPhoneNo((rs.getString("USERPHONENO")));
 			user.setUserEmailId((rs.getString("USEREMAILID")));
 			user.setUserAddress((rs.getString("USERADDRESS")));
 			user.setUserPassword((rs.getString("USERPASSWORD")));

@@ -85,16 +85,31 @@ public class HomeController {
 			modelAndView.setViewName("Login");
 		}
 		else {
+			model.addAttribute("promotion", new Promotion());
 			modelAndView.setViewName("ChoosePromoFlight");
 		}
-		return null;
+		return modelAndView;
 		
 	}
 	
-	@RequestMapping("/choosePromoFlight")
-	public ModelAndView choosePromoFlight(){
-		ModelAndView mv=new ModelAndView();
-		return null;
+	@RequestMapping("/applyFlightPromo")
+	public ModelAndView choosePromoFlight(@ModelAttribute("promotion") Promotion promotion,ModelMap model){
+		ModelAndView modelAndView=new ModelAndView();
+		double finalPrice=0;
+		double flightTicketPrice=((Flight)model.get("selectedFlightBeanSession")).getFlightTicketPrice() * 
+									(int)model.get("flightSeat");
+											
+		try {
+			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
+					((User)model.get("userBeanSession")).getUserId(), flightTicketPrice);
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			
+			e.printStackTrace();
+		}
+//		promotionBl.searchPromotion(promotion.getPromotionId());
+		modelAndView.setViewName("AfterPromoFlightPrice");
+		modelAndView.addObject("flightTicketPrice", flightTicketPrice);
+		return modelAndView;
 		
 	}
 
@@ -155,7 +170,7 @@ public class HomeController {
 		
 		List<String> promoNameList=new ArrayList<String>();
 		for(Promotion promo:promoList){
-			promoNameList.add(promo.getPromotionName());
+			promoNameList.add(promo.getPromotionId());
 		}
 		return promoNameList;
 	}
@@ -177,7 +192,7 @@ public class HomeController {
 	
 	
 	@RequestMapping("/loginCheck")
-	public ModelAndView loginCheck(HttpServletRequest request, ModelMap model){
+	public ModelAndView loginCheck(HttpServletRequest request, ModelMap model, HttpSession session){
 		
 		ModelAndView modelAndView=new ModelAndView();
 		String userId=request.getParameter("userId");
@@ -203,9 +218,21 @@ public class HomeController {
 			modelAndView.setViewName("AdminLoginHeader");
 
 		} else if (user != null) {
-			modelAndView.addObject("userBeanSession",user);
-//			model.addAttribute("userBean", user);
-			modelAndView.setViewName("UserLoginHeader");
+			if(session.getAttribute("selectedFlightBeanSession")!=null){
+				modelAndView.addObject("userBeanSession",user);
+				modelAndView.setViewName("ChoosePromoFlight");
+			}
+			else if(session.getAttribute("selectedHotelBeanSession")!=null){
+				modelAndView.addObject("userBeanSession",user);
+				modelAndView.setViewName("ChoosePromoHotel");
+			}
+			
+			else{
+				modelAndView.addObject("userBeanSession",user);
+				
+				modelAndView.setViewName("UserLoginHeader");
+			}
+			
 		} else {
 			modelAndView.addObject("loginErrMessage",  " Invalid User id or password");
 			modelAndView.setViewName("Login");
@@ -216,7 +243,8 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/logout")
-	public String logout(){
+	public String logout(HttpSession session){
+		session.invalidate();
 		return "HomeHeader";
 	}
 }

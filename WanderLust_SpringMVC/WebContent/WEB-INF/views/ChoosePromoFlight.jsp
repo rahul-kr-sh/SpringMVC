@@ -1,7 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<jsp:include page="UserLoginHeader.jsp"></jsp:include>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,36 +43,32 @@
 </style>
 </head>
 <body>
-	<form action="./Payment">
 
 
-		<p>
-			<b>Select a Promo Code</b>&nbsp; &nbsp;&nbsp;
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select id="promoflight"
-				name="promoflight">
+<c:choose>
+  <c:when test="${sessionScope.userBeanSession == null}">
+    <jsp:include page="HomeHeader.jsp"></jsp:include>
+  </c:when>
+ 
+  <c:otherwise>
+     <jsp:include page="UserLoginHeader.jsp"></jsp:include>
+  </c:otherwise>
+</c:choose>
 
-				<!--<c:set var="flightPromo" scope="session" value="${arrayListPromoFlight}"/>-->
-				<c:forEach items="${arrayListPromoFlight}" var="flightPromo">
-					
-					<option value="${flightPromo.getPromotionId()}">${flightPromo.getPromotionName()}</option>
 
-					<c:set var="pidFlight" scope="session" value="${flightPromo.getPromotionId()}"/>
-					<c:set var="pdiscountFlight" scope="session" value="${flightPromo.getPromotionDiscount()}"/>
-
-					<c:set var="pidFlight" scope="application" value="${flightPromo.getPromotionId()}"/>
-					<c:set var="pdiscountFlight" scope="application" value="${flightPromo.getPromotionDiscount()}"/>
-
-				</c:forEach>
-				 
-			</select> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <input type="button"
-				id="applyPromo" value="Apply"      onclick="loadDoc();" />
-		</p>
-		<p id="demo"></p>
-
-		<p>
-			<input type="submit" id="continue" value="Pay Now" />
-		</p>
-
-	</form>
+	
+	
+	<form:form action="./applyFlightPromo" modelAttribute="promotion">
+	
+	
+	<form:label path="promotionName">Select a Promo Code</form:label>
+	<form:select path="promotionId">
+		<form:option value="-------">Select promo</form:option>
+		<form:options items="${flightPromoList}"/>
+	</form:select><br><br>
+	
+	
+	<input type="submit" id="continue" value="Apply" />
+	</form:form>
 </body>
 </html>

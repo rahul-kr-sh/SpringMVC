@@ -69,7 +69,21 @@ body {
 }
 </style>
 </head>
-<jsp:include page="HomeHeader.jsp"></jsp:include>
+
+
+
+<c:choose>
+  <c:when test="${sessionScope.userBeanSession == null}">
+    <jsp:include page="HomeHeader.jsp"></jsp:include>
+  </c:when>
+ 
+  <c:otherwise>
+     <jsp:include page="UserLoginHeader.jsp"></jsp:include>
+  </c:otherwise>
+</c:choose>
+
+
+
 
 <body>
 	<form:form action="./selectFlight" modelAttribute="flight">
@@ -90,7 +104,7 @@ body {
 	
 	
 	
-	Depature-Date: <input id="departureDate" name="departureDate" type="date" placeholder="dd/mm/yyyy" min="" required/></td></tr>
+	Depature-Date: <input id="departureDate" name="departureDate" type="date" placeholder="dd/mm/yyyy" min="" required/>
 	<br><br>
 	Number of Seats :<input type="number" name="seats" value="1" min="1"/>
 	<br><br>

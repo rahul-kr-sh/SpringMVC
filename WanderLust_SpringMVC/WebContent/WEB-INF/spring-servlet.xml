@@ -26,7 +26,21 @@
  	
  	
  	
- 	<bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource">
-		<property name="basename" value="messages" />
-	</bean>
+ 	<bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource">
+        <property value="classpath:messages" name="basename"/>
+        <property value="UTF-8" name="defaultEncoding"/>
+    </bean>
+   
+    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" id="localeChangeInterceptor">
+        <property value="lang" name="paramName"/>
+    </bean>
+    
+    <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver">
+        <property value="en" name="defaultLocale"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" id="handlerMapping">
+        <property name="interceptors">
+            <ref bean="localeChangeInterceptor"/>
+    </property>
+</bean>
  </beans>

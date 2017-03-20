@@ -19,7 +19,7 @@ public class User implements Serializable{
 	private String userName;
 //	@ValidatePhone
 	@NotEmpty
-	private long userPhoneNo;
+	private String userPhoneNo;
 	@NotEmpty
 	@Email
 	private String userEmailId;
@@ -34,7 +34,7 @@ public class User implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(String userId, String userName, long userPhoneNo, String userEmailId, String userAddress,
+	public User(String userId, String userName, String userPhoneNo, String userEmailId, String userAddress,
 			String userPassword) {
 		super();
 		this.userId = userId;
@@ -56,10 +56,10 @@ public class User implements Serializable{
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public long getUserPhoneNo() {
+	public String getUserPhoneNo() {
 		return userPhoneNo;
 	}
-	public void setUserPhoneNo(long userPhoneNo) {
+	public void setUserPhoneNo(String userPhoneNo) {
 		this.userPhoneNo = userPhoneNo;
 	}
 	public String getUserEmailId() {

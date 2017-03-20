@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -49,15 +50,15 @@ background-attachment: fixed;
 	<div class="container-fluid">
 
 		<ul class="nav navbar-nav">
-			<li><a href="./">Flight</a></li>
+			<li><a href="./searchFlight">Flight</a></li>
 
 
-			<li><a href="LoggInHotelForm.jsp">Hotel</a></li>
+			<li><a href="./searchHotel">Hotel</a></li>
 
 
-			<li><a href="./UserPastFlight">Past Flight Bookings</a></li>
-			<li><a href="./UserPastHotel">Past Hotel Bookings</a></li>
-			<li><a href="Wallet.jsp"> Wallet</a></li>
+			<li><a href="./userPastFlight">Past Flight Bookings</a></li>
+			<li><a href="./userPastHotel">Past Hotel Bookings</a></li>
+			<li><a href="./showWallet"> Wallet</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 
