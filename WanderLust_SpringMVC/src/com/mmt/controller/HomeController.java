@@ -93,21 +93,25 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/applyFlightPromo")
-	public ModelAndView choosePromoFlight(@ModelAttribute("promotion") Promotion promotion,ModelMap model){
+	public ModelAndView choosePromoFlight(@ModelAttribute("promotion") Promotion promotion,ModelMap model,HttpSession session){
 		ModelAndView modelAndView=new ModelAndView();
 		double finalPrice=0;
-		System.out.println("=============="+((Flight)model.get("selectedFlightBeanSession")).getFlightTicketPrice());
-		double flightTicketPrice=((Flight)model.get("selectedFlightBeanSession")).getFlightTicketPrice() * 
-									(int)model.get("flightSeat");
-		System.out.println("=============="+ flightTicketPrice);
-											
+//		System.out.println("=============="+((Flight)session.getAttribute("selectedFlightBeanSession")).getFlightTicketPrice());
+//		System.out.println("==============\n\n\n"+session.getAttribute("flightSeat"));
+		double flightTicketPrice=((Flight)session.getAttribute("selectedFlightBeanSession")).getFlightTicketPrice() * 
+									(int)session.getAttribute("flightSeat");
+//		System.out.println("=============="+ flightTicketPrice);
+//											
 		try {
 			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
-					((User)model.get("userBeanSession")).getUserId(), flightTicketPrice);
+					((User)session.getAttribute("userBeanSession")).getUserId(), flightTicketPrice);
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			
 			e.printStackTrace();
 		}
+		
+		
+		
 //		promotionBl.searchPromotion(promotion.getPromotionId());
 		modelAndView.setViewName("AfterPromoFlightPrice");
 		modelAndView.addObject("flightTicketPrice", flightTicketPrice);

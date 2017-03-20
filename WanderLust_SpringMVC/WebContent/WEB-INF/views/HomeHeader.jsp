@@ -21,7 +21,7 @@ color: #318c8a;
 </style>
 <style >
 body {
-background-image: url("/static/images/bodyBackground.jpg"); /*You will specify your image path here.*/
+background-image: url("static/images/bodyBackground.jpg"); /*You will specify your image path here.*/
 -moz-background-size: cover;
 -webkit-background-size: cover;
 background-size: cover;
@@ -62,7 +62,7 @@ background-attachment: fixed;
   </nav>
  </form>
  
- <img src="/static/images/bodyBackground.jpg"  height="42" width="42">
+ 
 
 </body>
 </html>

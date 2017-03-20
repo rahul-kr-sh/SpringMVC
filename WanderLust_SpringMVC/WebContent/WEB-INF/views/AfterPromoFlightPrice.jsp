@@ -18,7 +18,7 @@
   </c:otherwise>
 </c:choose>
 
-
+${flightTicketPrice }
 
 </body>
 </html>
