@@ -96,8 +96,10 @@ public class HomeController {
 	public ModelAndView choosePromoFlight(@ModelAttribute("promotion") Promotion promotion,ModelMap model){
 		ModelAndView modelAndView=new ModelAndView();
 		double finalPrice=0;
+		System.out.println("=============="+((Flight)model.get("selectedFlightBeanSession")).getFlightTicketPrice());
 		double flightTicketPrice=((Flight)model.get("selectedFlightBeanSession")).getFlightTicketPrice() * 
 									(int)model.get("flightSeat");
+		System.out.println("=============="+ flightTicketPrice);
 											
 		try {
 			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
