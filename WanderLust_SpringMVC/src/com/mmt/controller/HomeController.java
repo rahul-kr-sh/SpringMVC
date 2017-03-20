@@ -31,7 +31,7 @@ import com.mmt.model.bl.UserBlMMT;
 
 
 @Controller
-@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession"})
+@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession","flightTicketPrice"})
 public class HomeController {
 
 	private FlightBookingBlMMT flightBookingBlMMT = new FlightBookingBlMMT();
@@ -96,11 +96,10 @@ public class HomeController {
 	public ModelAndView choosePromoFlight(@ModelAttribute("promotion") Promotion promotion,ModelMap model,HttpSession session){
 		ModelAndView modelAndView=new ModelAndView();
 		double finalPrice=0;
-//		System.out.println("=============="+((Flight)session.getAttribute("selectedFlightBeanSession")).getFlightTicketPrice());
-//		System.out.println("==============\n\n\n"+session.getAttribute("flightSeat"));
+
 		double flightTicketPrice=((Flight)session.getAttribute("selectedFlightBeanSession")).getFlightTicketPrice() * 
 									(int)session.getAttribute("flightSeat");
-//		System.out.println("=============="+ flightTicketPrice);
+
 //											
 		try {
 			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
@@ -117,6 +116,28 @@ public class HomeController {
 		modelAndView.addObject("flightTicketPrice", flightTicketPrice);
 		return modelAndView;
 		
+	}
+	
+	
+	@RequestMapping("./confirmFlightBooking")
+	public ModelAndView confirmBooking(HttpSession session){
+		ModelAndView modelAndView=new ModelAndView();
+		double flightTicketPrice=(double)session.getAttribute("flightTicketPrice");
+	double walletBalance=0;
+	try {
+		walletBalance = userBl.userWalletBalance(((User)session.getAttribute("userBeanSession")).getUserId());
+	} catch (ClassNotFoundException | SQLException | IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		if(walletBalance>=flightTicketPrice){
+			modelAndView.setViewName("FlightTicketPricePayment");
+		}
+		else{
+			modelAndView.setViewName("AddBalanceToWallet");
+		}
+		
+		return modelAndView;
 	}
 
 	@ModelAttribute("flightSourceList")
