@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -21,22 +22,27 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mmt.model.bean.Admin;
 import com.mmt.model.bean.Flight;
+import com.mmt.model.bean.FlightBooking;
 import com.mmt.model.bean.Promotion;
 import com.mmt.model.bean.User;
+import com.mmt.model.bean.Wallet;
 import com.mmt.model.bl.AdminBlMMT;
 import com.mmt.model.bl.FlightBookingBlMMT;
 import com.mmt.model.bl.HotelBlMMT;
 import com.mmt.model.bl.PromotionBlMMT;
 import com.mmt.model.bl.UserBlMMT;
+import com.mmt.model.bl.WalletBlMMT;
 
 
 @Controller
-@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession","flightTicketPrice"})
+@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession","flightTicketPrice","bookedFlightDetails","flightORhotel","requiredAmt"})
 public class HomeController {
 
 	private FlightBookingBlMMT flightBookingBlMMT = new FlightBookingBlMMT();
 	private HotelBlMMT hotelBlMMT = new HotelBlMMT();
 	private PromotionBlMMT promotionBl=new PromotionBlMMT();
+	private WalletBlMMT walletBlMMT=new WalletBlMMT();
+	
 	
 
 	private UserBlMMT userBl = new UserBlMMT();
@@ -121,23 +127,92 @@ public class HomeController {
 	
 	@RequestMapping("/confirmFlightBooking")
 	public ModelAndView confirmBooking(HttpSession session){
+		//List that maintain a flight booking details for printing purpose
+		List<String> bookedFlightDetails=new ArrayList<String>();
+		User user1=(User)session.getAttribute("userBeanSession");
+		Flight flight1=((Flight)session.getAttribute("selectedFlightBeanSession"));
+		FlightBooking flightBooking=new FlightBooking();
 		ModelAndView modelAndView=new ModelAndView();
 		double flightTicketPrice=(double)session.getAttribute("flightTicketPrice");
 	double walletBalance=0;
 	try {
-		walletBalance = userBl.userWalletBalance(((User)session.getAttribute("userBeanSession")).getUserId());
+		walletBalance = userBl.userWalletBalance(user1.getUserId());
+		
+		
 	} catch (ClassNotFoundException | SQLException | IOException e) {
-		// TODO Auto-generated catch block
+	
 		e.printStackTrace();
 	}
-		if(walletBalance>=flightTicketPrice){
-			System.out.println("=================="+ walletBalance);
-			modelAndView.setViewName("FlightTicketPricePayment");
+		if(walletBalance >= flightTicketPrice){
+			try {
+				flightBooking= flightBookingBlMMT.bookFlight(user1.getUserId(), flight1.getFlightId(), flight1.getFlightSource(), flight1.getFlightDestination(), (int)session.getAttribute("flightSeat"));
+				walletBlMMT.subtractWalletMoney(user1.getUserId(), flightTicketPrice);
+				//Adding details to bookedFlightDetails arraylist
+				bookedFlightDetails.add(flightBooking.getFlightBookingId());
+				bookedFlightDetails.add(flight1.getFlightCompanyName());
+				bookedFlightDetails.add(flight1.getFlightArrivalTime());
+				bookedFlightDetails.add(flight1.getFlightDepartureTime());
+				bookedFlightDetails.add(flight1.getFlightSource());
+				bookedFlightDetails.add(flight1.getFlightDestination());
+				bookedFlightDetails.add(flightBooking.getFlightBookingDate().toString());
+				bookedFlightDetails.add(Double.toString(flightTicketPrice));
+				modelAndView.addObject("bookedFlightDetails", bookedFlightDetails);
+				
+				
+				modelAndView.setViewName("PrintFlightTicket");
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				
+				e.printStackTrace();
+			}
+			
+			
 		}
 		else{
+			double requiredAmt=flightTicketPrice - walletBalance;
+			modelAndView.addObject("requiredAmt", requiredAmt);
+			modelAndView.addObject("flightORhotel", "flight");
 			modelAndView.setViewName("AddBalanceToWallet");
+			
 		}
 		
+		return modelAndView;
+	}
+	
+	
+	
+	 @RequestMapping("/addMoney")
+	public ModelAndView addMoney(HttpServletRequest request, HttpSession session){
+		
+		 String userId=((User)session.getAttribute("userBeanSession")).getUserId();
+		ModelAndView modelAndView=new ModelAndView();
+		double requiredAmt=0;
+		String amt=request.getParameter("amount");
+		Double moneyToAdd=0.0;
+		if(amt!=null){
+		moneyToAdd = Double.parseDouble(amt);
+		}
+//		if(moneyToAdd!=null){
+		if(session.getAttribute("requiredAmt")!=null)
+			requiredAmt=(Double)session.getAttribute("requiredAmt");
+		
+		
+		
+		if(moneyToAdd >= requiredAmt && ((String)session.getAttribute("flightORhotel")).equals("flight")){
+			try {
+				walletBlMMT.addWalletMoney(userId, moneyToAdd);
+				//walletBlMMT.subtractWalletMoney(userId, flightTicketPrice);
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			modelAndView.setViewName("AfterPromoFlightPrice");
+		}
+		
+		else {
+			modelAndView.setViewName("AddBalanceToWallet");
+			modelAndView.addObject("notRequiredAmount", "Please enter Required amount: "+ requiredAmt);
+		}	
+//		}
 		return modelAndView;
 	}
 

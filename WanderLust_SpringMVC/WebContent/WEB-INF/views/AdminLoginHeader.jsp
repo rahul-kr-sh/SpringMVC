@@ -4,9 +4,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<style >
+h2 span{
+color: dark grey; 
+   font: bold 24px/45px Helvetica, Sans-Serif; 
+   font-size:100px;
+   letter-spacing: -1px;  
+   padding: 10px;
+}
+</style>
+
 <style >
 body {
-background-image: url(images/img.jpg); /*You will specify your image path here.*/
+background-image: url(static/images/bodyBackground.jpg); /*You will specify your image path here.*/
 
 -moz-background-size: cover;
 -webkit-background-size: cover;
@@ -24,6 +35,8 @@ background-attachment: fixed;
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+<h2><span><center>WanderLust</center></span></h2>
 <br>
 <br>
 <br>
