@@ -2,10 +2,14 @@ package com.mmt.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,6 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mmt.model.bean.Admin;
 import com.mmt.model.bean.Flight;
 import com.mmt.model.bean.FlightBooking;
+import com.mmt.model.bean.Hotel;
+import com.mmt.model.bean.HotelRoom;
 import com.mmt.model.bean.Promotion;
 import com.mmt.model.bean.User;
 import com.mmt.model.bean.Wallet;
@@ -207,7 +213,22 @@ public class HomeController {
 			}
 			modelAndView.setViewName("AfterPromoFlightPrice");
 		}
+		else if(((String)session.getAttribute("flightORhotel")).equals("wallet")){
+			try {
+				modelAndView.addObject("walletBalanceMsg", "your wallet balance :"+ walletBlMMT.walletBalance(userId));
+				modelAndView.setViewName("ShowWallet");
+				walletBlMMT.addWalletMoney(userId, moneyToAdd);
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
 		
+		else if(moneyToAdd >= requiredAmt && ((String)session.getAttribute("flightORhotel")).equals("hotel")){
+			modelAndView.setViewName("AfterPromoHotelPrice");
+		}
 		else {
 			modelAndView.setViewName("AddBalanceToWallet");
 			modelAndView.addObject("notRequiredAmount", "Please enter Required amount: "+ requiredAmt);
@@ -215,7 +236,123 @@ public class HomeController {
 //		}
 		return modelAndView;
 	}
+	 
+	 @RequestMapping("/showWallet")
+	 public ModelAndView showWallet(HttpSession session){
+		 User user1=(User)session.getAttribute("userBeanSession");
+		 ModelAndView modelAndView=new ModelAndView();
+		 modelAndView.addObject("flightORhotel", "wallet");
+		 try {
+			modelAndView.addObject("walletBalanceMsg", "your wallet balance :"+ walletBlMMT.walletBalance(user1.getUserId()));
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			
+			e.printStackTrace();
+		}
+		 modelAndView.setViewName("ShowWallet");
+		 return modelAndView;
+	 }
 
+	 
+	//Hotel Section Start
+		@RequestMapping("/searchHotel")
+		public ModelAndView searchHotel(){
+			ModelAndView modelAndView=new ModelAndView("HotelForm");
+			
+			return modelAndView;
+		}
+		
+	
+		@RequestMapping("/selectHotel")
+		public ModelAndView selectHotel(HttpServletRequest request){
+			ModelAndView modelAndView=new ModelAndView("HotelForm");
+			
+			String place = request.getParameter("place");
+			String from = request.getParameter("from");
+			String to = request.getParameter("to");
+			int rooms=Integer.parseInt(request.getParameter("room"));
+			
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date d1 = null;
+			try {
+				d1 = (Date) dateFormat.parse(from);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Date d2 = null;
+			SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				d2 = (Date) dateFormat1.parse(to);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			modelAndView.addObject("checkIn", d1);
+			modelAndView.addObject("checkOut", d2);
+			
+			long diff = d2.getTime() - d1.getTime();
+			int duration = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			
+			modelAndView.addObject("stayDuration", duration);
+			modelAndView.addObject("place", place);
+			modelAndView.addObject("to", to);
+			modelAndView.addObject("from", from);
+			modelAndView.addObject("room", rooms);
+			
+			
+			HotelBlMMT hotelBl = new HotelBlMMT();
+			ArrayList<Hotel> arrayListHotel = null;
+			
+				try {
+					arrayListHotel = hotelBl.searchHotel1(place);
+				} catch (IOException | ClassNotFoundException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			if (arrayListHotel.isEmpty()) {
+				
+				modelAndView.addObject("noHotelMsg","Sorry No any hotel found in " + place);
+				modelAndView.setViewName("SearchHotelList");
+				
+			} else {
+				modelAndView.addObject("searchedHotelSet", arrayListHotel);
+				
+				modelAndView.setViewName("SearchHotelList");
+				
+			}
+	
+			return modelAndView;
+		}
+		
+		
+	@RequestMapping("/chooseRoom")
+	public ModelAndView chooseRoom(HttpSession session){
+		ModelAndView modelAndView=new ModelAndView("HotelForm");
+		ArrayList<HotelRoom> arrayListHotelRoom = null;
+		String hotelId=(String)session.getAttribute("hotelId");
+		try {
+			arrayListHotelRoom=hotelBlMMT.displayAvailHotelRoom(hotelId);
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			
+			e.printStackTrace();
+		}
+		if (arrayListHotelRoom.isEmpty()) {
+			
+			modelAndView.addObject("noRoomAvailableMsg", "No Hotel Rooms Available");
+			modelAndView.setViewName("ChooseRoom");
+		}
+		
+		else{
+			modelAndView.addObject("arrayListHotelRoom", arrayListHotelRoom);
+			modelAndView.setViewName("ChooseRoom");
+		}
+		
+		return modelAndView;
+		
+	}
+		
 	@ModelAttribute("flightSourceList")
 	public Set<String> flightSourceList() {
 
@@ -281,6 +418,9 @@ public class HomeController {
 	
 	
 	//Flight Section end
+	
+	
+	
 	
 	
 	//Login section for either admin or user

@@ -48,7 +48,7 @@ background-attachment: fixed;
       <li ><a href="./searchFlight">Flight</a></li>
       
       
-      <li><a href="HotelForm.jsp">Hotel</a>  </li>
+      <li><a href="./searchHotel">Hotel</a>  </li>
         
      
       <li><a href="ContactUs.jsp">Contact</a></li>
