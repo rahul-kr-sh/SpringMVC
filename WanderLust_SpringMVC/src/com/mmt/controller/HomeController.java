@@ -17,6 +17,7 @@ import javax.websocket.server.PathParam;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -352,6 +353,22 @@ public class HomeController {
 		return modelAndView;
 		
 	}
+	
+	@RequestMapping("/bookHotel")
+	public ModelAndView bookHotel(HttpSession session){
+		ModelAndView modelAndView=new ModelAndView("HotelForm");
+		if(session.getAttribute("userBeanSession")==null){
+			modelAndView.setViewName("Login");
+		}
+		else {
+//			model.addAttribute("promotion", new Promotion());
+			modelAndView.setViewName("ChoosePromoHotel");
+		}
+		return modelAndView;
+		
+		
+		
+	}
 		
 	@ModelAttribute("flightSourceList")
 	public Set<String> flightSourceList() {
@@ -416,6 +433,24 @@ public class HomeController {
 	}
 	
 	
+	@ModelAttribute("hotelPromoList")
+	public List<String> hotelPromoList(){
+		List<Promotion> promoList=new ArrayList<Promotion>();
+		try {
+			promoList=promotionBl.displayPromotion("HOTEL");
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+		
+			e.printStackTrace();
+		}
+		
+		List<String> promoNameList=new ArrayList<String>();
+		for(Promotion promo:promoList){
+			promoNameList.add(promo.getPromotionId());
+		}
+		return promoNameList;
+	}
+	
+	
 	
 	//Flight Section end
 	
@@ -463,10 +498,12 @@ public class HomeController {
 		} else if (user != null) {
 			if(session.getAttribute("selectedFlightBeanSession")!=null){
 				modelAndView.addObject("userBeanSession",user);
+				model.addAttribute("promotion", new Promotion());
 				modelAndView.setViewName("ChoosePromoFlight");
 			}
 			else if(session.getAttribute("selectedHotelBeanSession")!=null){
 				modelAndView.addObject("userBeanSession",user);
+				model.addAttribute("promotion", new Promotion());
 				modelAndView.setViewName("ChoosePromoHotel");
 			}
 			

@@ -63,7 +63,7 @@ th {
      <td><c:out value="${hotelRoom.getHotelRoomType()}" /></td>
      <td><c:out value="${hotelRoom.getHotelRoomPrice()}" /></td>
       <td>
-      <form action="./ChoosePromoHotel">
+      <form action="./bookHotel">
       <c:set var="hotelRoomNo" scope="session" value="${hotelRoom.getHotelRoomNo()}"/>
       <c:set var="RoomPrice" scope="session" value="${hotelRoom.getHotelRoomPrice()}"/>
       <!--<c:set var="hotelId" scope="session" value="${hotel.getHotelId()}"/>-->
