@@ -2,7 +2,9 @@ package com.mmt.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -10,8 +12,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mmt.model.bean.FlightBooking;
 import com.mmt.model.bean.User;
 import com.mmt.model.bl.UserBlMMT;
 
@@ -23,6 +27,7 @@ import com.mmt.model.bl.UserBlMMT;
 //sdsd
 
 @Controller
+@SessionAttributes({"pastFlightBooking","pastHotelBooking"})
 public class UserController {
 	
 	private UserBlMMT userBl=new UserBlMMT();
@@ -110,7 +115,42 @@ public class UserController {
 	}
 	
 	
+	@RequestMapping("/userPastFlight")
+	public ModelAndView userPastFlight(HttpSession session){
+		User user1=(User)session.getAttribute("userBeanSession");
+		ModelAndView modelAndView =new ModelAndView();
+		ArrayList<FlightBooking> pastFlightBooking=null;
+		try {
+			pastFlightBooking=userBl.pastFbooking(user1.getUserId());
+			modelAndView.addObject("pastFlightBooking", pastFlightBooking);
+			
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(pastFlightBooking.get(0));
+		modelAndView.setViewName("UserPastFlight");
+		return modelAndView;
+	}
 	
+	
+		@RequestMapping("/userPastHotel")
+		public ModelAndView userPastHotel(HttpSession session){
+			User user1=(User)session.getAttribute("userBeanSession");
+			ModelAndView modelAndView =new ModelAndView();
+			ArrayList<FlightBooking> pastHotelBooking=null;
+			try {
+				pastHotelBooking=userBl.pastFbooking(user1.getUserId());
+				modelAndView.addObject("pastHotelBooking", pastHotelBooking);
+				
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(pastHotelBooking.get(0));
+			modelAndView.setViewName("UserPastHotel");
+			return modelAndView;
+	}
 	
 	
 	

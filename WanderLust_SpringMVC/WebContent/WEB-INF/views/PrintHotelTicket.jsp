@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Print Flight Ticket</title>
+<title>Print Hotel Ticket</title>
 
 
 <script>
@@ -46,13 +46,12 @@ button{
         <table class="table table-bordered">
             <thead>
                 <tr>
-                	<th>Flight Boking Id</th>
-                    <th>Flight Company Name</th>
-                    <th>Flight Arrival Time</th>
-                    <th>Flight Departure Time</th>
-                    <th>Flight Source</th>
-                    <th>Flight Destination</th>
-                    <th>Flight Booking Date</th>
+                	<th>Hotel Boking Id</th>
+                    <th>Hotel Name</th>
+                    <th>Room no</th>
+                    <th>Hotel Location</th>
+                    <th>Check In Date</th>
+                    <th>Check Out Date</th>
                     <th>Total Price</th>
                     
                     
@@ -64,14 +63,14 @@ button{
             <tbody>
                 <tr>
                 
-                    <td><c:out value="${ bookedFlightDetails.get(0)}" /></td>
-                    <td><c:out value="${ bookedFlightDetails.get(1)}" /></td>
-                    <td><c:out value="${ bookedFlightDetails.get(2)}" /></td>
-                     <td><c:out value="${ bookedFlightDetails.get(3)}" /></td>
-                      <td><c:out value="${ bookedFlightDetails.get(4)}" /></td>
-                       <td><c:out value="${ bookedFlightDetails.get(5)}" /></td>
-                       <td><c:out value="${ bookedFlightDetails.get(6)}" /></td>
-                       <td><c:out value="${ bookedFlightDetails.get(7)}" /></td>
+                    <td><c:out value="${ bookedHotelDetails.get(7)}" /></td>
+                    <td><c:out value="${ bookedHotelDetails.get(0)}" /></td>
+                    <td><c:out value="${ bookedHotelDetails.get(2)}" /></td>
+                     <td><c:out value="${ bookedHotelDetails.get(3)}" /></td>
+                      <td><c:out value="${ bookedHotelDetails.get(4)}" /></td>
+                       <td><c:out value="${ bookedHotelDetails.get(5)}" /></td>
+                       <td><c:out value="${ bookedHotelDetails.get(6)}" /></td>
+                       
                        
                  
                 </tr>

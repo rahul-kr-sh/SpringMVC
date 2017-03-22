@@ -3,7 +3,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-
+    <jsp:include page="AdminLoginHeader.jsp"></jsp:include>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +25,7 @@ table {
 }
 
 th, td {
-    padding: 19px;
+    padding: 5px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -38,40 +38,23 @@ th {
 </style>
 </head>
 <body>
-<c:choose>
-  <c:when test="${sessionScope.userBeanSession == null}">
-    <jsp:include page="HomeHeader.jsp"></jsp:include>
-  </c:when>
- 
-  <c:otherwise>
-     <jsp:include page="UserLoginHeader.jsp"></jsp:include>
-  </c:otherwise>
-</c:choose>
-
-
 <table border="1">
 	<tr>
-	<th></th>
+	
 	<th>Hotel Id</th>
 	<th>Hotel Name</th>
 	<th>Information</th>
-	<th></th>
+	
 	</tr>
-<c:forEach items="${searchedHotelSet}" var="hotel">
+<c:forEach items="${arrayListHotel}" var="hotel">
 <tr>
-	<td><img src="static/images/${hotel.getHotelImage()}"  height="100" width="100"/></td>
+	
 	
      <td><c:out value="${hotel.getHotelId()}" /></td>
      <td><c:out value="${hotel.getHotelName()}" /></td>
       <td><c:out value="${hotel.getHotelInfo()}" /></td>
       
-      <td>
-      <form action="./chooseRoom">
-      <c:set var="selectedHotelBeanSession" scope="session" value="${hotel}"/>
-      
-      <button type="submit" id="book">Choose Room</button>
-      </form>
-      </td>
+     
  </tr> 
 </c:forEach>
 </table>

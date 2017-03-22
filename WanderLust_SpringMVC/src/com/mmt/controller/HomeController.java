@@ -29,6 +29,7 @@ import com.mmt.model.bean.Admin;
 import com.mmt.model.bean.Flight;
 import com.mmt.model.bean.FlightBooking;
 import com.mmt.model.bean.Hotel;
+import com.mmt.model.bean.HotelBooking;
 import com.mmt.model.bean.HotelRoom;
 import com.mmt.model.bean.Promotion;
 import com.mmt.model.bean.User;
@@ -41,14 +42,18 @@ import com.mmt.model.bl.UserBlMMT;
 import com.mmt.model.bl.WalletBlMMT;
 
 
+
+//bookedFlightDetails is array list of string of flight booking
+//
 @Controller
-@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession","flightTicketPrice","bookedFlightDetails","flightORhotel","requiredAmt"})
+@SessionAttributes({"flightSeat","userBeanSession","adminBeanSession","flightTicketPrice","bookedFlightDetails","flightORhotel","requiredAmt","selectedHotelBookingDetails","bookedHotelDetails","rooms","hotelRoomPrice"})
 public class HomeController {
 
 	private FlightBookingBlMMT flightBookingBlMMT = new FlightBookingBlMMT();
 	private HotelBlMMT hotelBlMMT = new HotelBlMMT();
 	private PromotionBlMMT promotionBl=new PromotionBlMMT();
 	private WalletBlMMT walletBlMMT=new WalletBlMMT();
+	
 	
 	
 
@@ -113,7 +118,7 @@ public class HomeController {
 		double flightTicketPrice=((Flight)session.getAttribute("selectedFlightBeanSession")).getFlightTicketPrice() * 
 									(int)session.getAttribute("flightSeat");
 
-//											
+										
 		try {
 			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
 					((User)session.getAttribute("userBeanSession")).getUserId(), flightTicketPrice);
@@ -264,9 +269,13 @@ public class HomeController {
 		
 	
 		@RequestMapping("/selectHotel")
-		public ModelAndView selectHotel(HttpServletRequest request){
-			ModelAndView modelAndView=new ModelAndView("HotelForm");
+		public ModelAndView selectHotel(HttpServletRequest request,HttpSession session){
+			ModelAndView modelAndView=new ModelAndView();
+			HotelBooking hotelBooking=new HotelBooking();
 			
+			
+			
+			//selectedHotelDetails
 			String place = request.getParameter("place");
 			String from = request.getParameter("from");
 			String to = request.getParameter("to");
@@ -289,18 +298,32 @@ public class HomeController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			modelAndView.addObject("checkIn", d1);
-			modelAndView.addObject("checkOut", d2);
+			
 			
 			long diff = d2.getTime() - d1.getTime();
 			int duration = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			
+			/*
+			modelAndView.addObject("checkIn", d1);
+			modelAndView.addObject("checkOut", d2);
 			
 			modelAndView.addObject("stayDuration", duration);
 			modelAndView.addObject("place", place);
 			modelAndView.addObject("to", to);
 			modelAndView.addObject("from", from);
-			modelAndView.addObject("room", rooms);
+			*/
+			modelAndView.addObject("rooms", rooms);
 			
+			hotelBooking.setHotelCheckInDate(d1);
+			hotelBooking.setHotelCheckOutDate(d2);
+			hotelBooking.setStayDuration(duration);
+			hotelBooking.setRoomNo(rooms);
+			
+			
+			hotelBooking.setUserId(((User)session.getAttribute("userBeanSession")).getUserId());
+			
+			
+			modelAndView.addObject("selectedHotelBookingDetails", hotelBooking);
 			
 			HotelBlMMT hotelBl = new HotelBlMMT();
 			ArrayList<Hotel> arrayListHotel = null;
@@ -332,9 +355,9 @@ public class HomeController {
 	public ModelAndView chooseRoom(HttpSession session){
 		ModelAndView modelAndView=new ModelAndView("HotelForm");
 		ArrayList<HotelRoom> arrayListHotelRoom = null;
-		String hotelId=(String)session.getAttribute("hotelId");
+		Hotel hotel1=(Hotel)session.getAttribute("selectedHotelBeanSession");
 		try {
-			arrayListHotelRoom=hotelBlMMT.displayAvailHotelRoom(hotelId);
+			arrayListHotelRoom=hotelBlMMT.displayAvailHotelRoom(hotel1.getHotelId());
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			
 			e.printStackTrace();
@@ -355,13 +378,13 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/bookHotel")
-	public ModelAndView bookHotel(HttpSession session){
-		ModelAndView modelAndView=new ModelAndView("HotelForm");
+	public ModelAndView bookHotel(HttpSession session, ModelMap model){
+		ModelAndView modelAndView=new ModelAndView();
 		if(session.getAttribute("userBeanSession")==null){
 			modelAndView.setViewName("Login");
 		}
 		else {
-//			model.addAttribute("promotion", new Promotion());
+			model.addAttribute("promotion", new Promotion());
 			modelAndView.setViewName("ChoosePromoHotel");
 		}
 		return modelAndView;
@@ -369,6 +392,111 @@ public class HomeController {
 		
 		
 	}
+	
+	@RequestMapping("/applyHotelPromo")
+	public ModelAndView applyHotelPromo(@ModelAttribute("promotion") Promotion promotion,ModelMap model,HttpSession session){
+		ModelAndView modelAndView=new ModelAndView();
+		HotelBooking hotelBooking=(HotelBooking)session.getAttribute("selectedHotelBookingDetails");
+		
+		Hotel hotel1=(Hotel)session.getAttribute("selectedHotelBeanSession");
+		hotelBooking.setHotelId(hotel1.getHotelId());
+		try {
+			hotel1 = hotelBlMMT.searchHotel(hotelBooking.getHotelId());
+		} catch (ClassNotFoundException | IOException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		double finalPrice=0;
+
+		double hotelRoomPrice=((int)session.getAttribute("rooms")) *(double)session.getAttribute("roomPrice");
+									
+		//((int)session.getAttribute("hotelRoomNo")) * 
+										
+		try {
+			finalPrice=promotionBl.applyPromotion(promotionBl.searchPromotion(promotion.getPromotionId()),
+					((User)session.getAttribute("userBeanSession")).getUserId(), hotelRoomPrice);
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			
+			e.printStackTrace();
+		}
+		
+	
+		//bookedFlightDetails
+		List<String> bookedHotelDetails=new ArrayList<String>();
+		bookedHotelDetails.add(hotel1.getHotelName());
+		bookedHotelDetails.add(hotel1.getHotelImage());
+		int roomNumber=(int)session.getAttribute("hotelRoomNo");
+		bookedHotelDetails.add(Integer.toString(roomNumber));
+		bookedHotelDetails.add(hotel1.getHotelLocation());
+		bookedHotelDetails.add(hotelBooking.getHotelCheckInDate().toString());
+		bookedHotelDetails.add(hotelBooking.getHotelCheckOutDate().toString());
+		bookedHotelDetails.add(Double.toString(hotelRoomPrice));
+//		promotionBl.searchPromotion(promotion.getPromotionId());
+		
+		modelAndView.setViewName("AfterPromoHotelPrice");
+		modelAndView.addObject("hotelRoomPrice", hotelRoomPrice);
+		modelAndView.addObject("bookedHotelDetails", bookedHotelDetails);
+		
+		return modelAndView;
+	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/confirmHotelBooking")
+	public ModelAndView confirmHotelBooking(HttpSession session){
+		//List that maintain a hotel booking details for printing purpose
+		HotelBooking hotelBooking=(HotelBooking)session.getAttribute("selectedHotelBookingDetails");
+		List<String> bookedHotelDetails=new ArrayList<String>();
+		User user1=(User)session.getAttribute("userBeanSession");
+		//Flight flight1=((Flight)session.getAttribute("selectedFlightBeanSession"));
+		FlightBooking flightBooking=new FlightBooking();
+		ModelAndView modelAndView=new ModelAndView();
+		double hotelRoomPrice=(double)session.getAttribute("hotelRoomPrice");
+	double walletBalance=0;
+	try {
+		walletBalance = userBl.userWalletBalance(user1.getUserId());
+		
+		
+	} catch (ClassNotFoundException | SQLException | IOException e) {
+	
+		e.printStackTrace();
+	}
+		if(walletBalance >= hotelRoomPrice){
+			try {
+				hotelBooking=hotelBlMMT.bookHotel(user1.getUserId(), hotelBooking.getHotelId(), (int)session.getAttribute("hotelRoomNo"), hotelBooking.getHotelCheckInDate(), hotelBooking.getHotelCheckOutDate());
+				//flightBooking= flightBookingBlMMT.bookFlight(user1.getUserId(), flight1.getFlightId(), flight1.getFlightSource(), flight1.getFlightDestination(), (int)session.getAttribute("flightSeat"));
+				walletBlMMT.subtractWalletMoney(user1.getUserId(), hotelRoomPrice);
+				//Adding details to bookedHotelDetails arraylist
+				bookedHotelDetails=(List)session.getAttribute("bookedHotelDetails");
+				bookedHotelDetails.add(hotelBooking.getHotelBookingId());
+				modelAndView.addObject("bookedHotelDetails", bookedHotelDetails);
+				modelAndView.setViewName("PrintHotelTicket");
+			} catch (ClassNotFoundException | SQLException | IOException e) {
+				
+				e.printStackTrace();
+			}
+			
+			
+		}
+		else{
+			double requiredAmt=hotelRoomPrice - walletBalance;
+			modelAndView.addObject("requiredAmt", requiredAmt);
+			modelAndView.addObject("flightORhotel", "hotel");
+			modelAndView.setViewName("AddBalanceToWallet");
+			
+		}
+		
+		return modelAndView;
+	}
+	
+	
+	
+	
+	
+	
 		
 	@ModelAttribute("flightSourceList")
 	public Set<String> flightSourceList() {
